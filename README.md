@@ -35,7 +35,7 @@ Major focus on plotting:
 - FFTData: Generates a FFT out the Data
 - String2List: Generates a List out of a csv with one line
 
-### ControlTheorie_Toolbox
+### ControlTheory_Toolbox
 Major fucus on control theorie and plotting
 
 - Extract_Sympy_1Var: Substitutes Sympy and generates numeric solution

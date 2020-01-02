@@ -64,6 +64,7 @@ def Extract_Sympy_1Var(symbolic, eval_range, variable='s', evaluation="lambdify"
 def BodePlot_FBCTRL(feedforward, feedback, freq, variable='s', evaluation="lambdify",
                     Add_LoopBW = True, Add_PhaseMargin = True,
                     Name_LoopBW= r'$f_\mathrm{loop}$ = ',Scale_LoopBW = 1e3,  Unit_LoopBW= 'kHz',
+                    Name_PhaseMargin= r'$\varphi_\Delta$ = ', Max_PhaseMargin = -180,
                     Name_OL_dB = r'Open Loop Reference Phase $|\mathrm{G}_\mathrm{OL}|$',
                     Name_CL_dB = r'Closed Loop Reference Phase $|\mathrm{G}_\mathrm{CL}|$',
                     Name_OL_PH = r'Open Loop Reference Phase $\angle~(\mathrm{G}_\mathrm{OL})$',
@@ -89,14 +90,16 @@ def BodePlot_FBCTRL(feedforward, feedback, freq, variable='s', evaluation="lambd
     variable                (optional) laplace variable
     evaluation              (optional) define the used evalutaion function (lambdify|subs)  
     Add_LoopBW              (optional) Insert LoopBandwidth vertical line
-    Add_PhaseMargin         (optional) Insert PhaseMargin horizontal line
     Name_LoopBW             (optional) Name of Loop Bandwidth
     Scale_LoopBW            (optional) Scale of Loop Bandwidth
     Unit_LoopBW             (optional) Unit of Loop Bandwidth
+    Add_PhaseMargin         (optional) Insert Phase Margin horizontal line
+    Name_PhaseMargin        (optional) Name of Phase Margin
+    Max_PhaseMargin         (optional) Line at maximum Phase Margin
     Name_OL_dB              (optional) Name of Open Loop Magnitue (in dB)
     Name_CL_dB              (optional) Name of Closed Loop Magnitue (in dB)   
     Name_OL_PH              (optional) Name of Open Loop Phase (in degree)
-    Name_CL_PH             (optional) Name of Closed Loop Phase (in degree)     
+    Name_CL_PH              (optional) Name of Closed Loop Phase (in degree)     
     
     return type
        array with values
@@ -105,7 +108,7 @@ def BodePlot_FBCTRL(feedforward, feedback, freq, variable='s', evaluation="lambd
  ############################################################################# 
     
     # Frequency Scale to j*w
-    omega = 1j * 2*np.pi * freq
+    omega = 2j*np.pi * freq
     
     # Generate open and closed loop transfer function
     OpenLoop = feedforward * feedback
@@ -142,34 +145,39 @@ def BodePlot_FBCTRL(feedforward, feedback, freq, variable='s', evaluation="lambd
     basic.SemiLogX_Plot(ax2, plot_phase, Xlabel_freq, Ylabel_phase)
     
     # =================================== 
-    if Add_LoopBW:
+    if Add_LoopBW | Add_PhaseMargin:
         
-        # Find Gain of 1 in s-domain and rescale
+        # Find Gain of 1 in omega-domain and rescale
         loop_bw = sympy.solve(OpenLoop-1, variable)
         loop_bw = float(loop_bw[0])/(2*np.pi)
         
+    # =================================== 
+    if Add_LoopBW:
+        
+        # Rescale Loop Bandwidth
+        loop_bw_str = loop_bw/Scale_LoopBW
+        
         # Generate String
-        str_loop_bw = loop_bw/Scale_LoopBW
-        str_loop_bw = str(np.round(str_loop_bw, decimals=3))
+        loop_bw_str = str(np.round(loop_bw, decimals=3))
         
         # Add vertical line
-        basic.Vline_Plot(ax1, loop_bw, Name_LoopBW + str_loop_bw + Unit_LoopBW)
-        basic.Vline_Plot(ax2, loop_bw, Name_LoopBW + str_loop_bw + Unit_LoopBW)  
+        basic.Vline_Plot(ax1, loop_bw, Name_LoopBW + loop_bw_str + Unit_LoopBW)
+        basic.Vline_Plot(ax2, loop_bw, Name_LoopBW + loop_bw_str + Unit_LoopBW)  
  
     # =================================== 
     if Add_PhaseMargin:
+
+        # Find current phase
+        current_phase = Extract_Sympy_1Var(ClosedLoop, (2j*np.pi*loop_bw))
+        current_phase = np.angle(current_phase, deg=True)
         
-        # Find Gain of 1 in s-domain and rescale
-        loop_bw = sympy.solve(OpenLoop-1, variable)
-        loop_bw = float(loop_bw[0])/(2*np.pi)
+        # calculate phase margin
+        phase_margin = Max_PhaseMargin-current_phase
         
-        # Generate String
-        str_loop_bw = loop_bw/Scale_LoopBW
-        str_loop_bw = str(np.round(str_loop_bw, decimals=3))
-        
-        # Add vertical line
-        basic.Vline_Plot(ax1, loop_bw, Name_LoopBW + str_loop_bw + Unit_LoopBW)
-        basic.Vline_Plot(ax2, loop_bw, Name_LoopBW + str_loop_bw + Unit_LoopBW)  
+        # Add horizontal line
+        basic.Hline_Plot(ax2, Max_PhaseMargin, str(Max_PhaseMargin) + '$^\circ$')
+        basic.Hline_Plot(ax2, current_phase,  Name_PhaseMargin + str(phase_margin) + '$^\circ$', color='k', linestyle='--')
+
         
 # =================================== 
 
