@@ -24,6 +24,7 @@ Major focus on plotting:
 - FindPoint_FitFct: fits higher order Polynom against Dataset to find point
 - Linearization_Point: linearization around one point
 - Linear_Plot: linear plot function with automated labeling
+- Box_Plot: Boxplots with automated labeling
 - SemiLogX_Plot: semilog x plot function with automated labeling
 - Vline_Plot: generates vertical line in plot with label
 - Hline_Plot: generates horizontal line in plot with label
@@ -32,11 +33,17 @@ Major focus on plotting:
 - Digitalize_Data: Generates binary stream from data and clock
 - CMPLX2Format: converts complex numbers in different formats
 - Average: Average a Dataset
-- FFTData: Generates a FFT out the Data
+- FrequencyFiltering: Frequency Filtering of Data
 - String2List: Generates a List out of a csv with one line
+- XYZ_Plot: generates 3D Plot (X,Y,Z) for i.e. waterfall diagrams
+- Spectrum_Minimizer: Generates Mean and Max Spectrum from Dataset
 
 ### ControlTheory_Toolbox
 Major fucus on control theorie and plotting
 
-- Extract_Sympy_1Var: Substitutes Sympy and generates numeric solution
-- BodePlot_FBCTRL: Generate BodePlot out of symbolic feedback transfer function
+ - Extract_Sympy_1Var: Substitutes Sympy and generates numeric solution
+ - BodePlot_FBCTRL: Generate BodePlot out of symbolic feedback transfer function
+ - BodePlot: Generate BodePlot out of symbolic transfer function
+ - StepResponse: Generate Step Response with Heaviside Fct from symbolic transfer function
+ - Substitute_Datatype: Substitute constant values with symboles
+ - ReSubstitute_Datatype: Resubstitute constant values with symboles
