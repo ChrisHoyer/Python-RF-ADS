@@ -115,7 +115,7 @@ def Extract_Sympy_1Var(symbolic, eval_range, variable='s', evaluation="lambdify"
 #############################################################################
 #           Generate BodePlot out of symbolic transfer function
 #############################################################################
-def BodePlot_FBCTRL(feedforward, feedback, freq, variable='s', evaluation="lambdify",
+def BodePlot_FBCTRL(feedforward, feedback, freq, variable="", evaluation="lambdify",
                     Add_LoopBW = False, Add_PhaseMargin = True, Add_MaxPhaseMargin = True,
                     PlotBlackWhite = False,
                     Name_LoopBW= r'$f_\mathrm{loop}$ = ',Scale_LoopBW = 1e3,  Unit_LoopBW= 'kHz',
@@ -168,7 +168,8 @@ def BodePlot_FBCTRL(feedforward, feedback, freq, variable='s', evaluation="lambd
     """   
  ############################################################################# 
     # Generate Variable
-    variable = sympy.Symbol(variable)
+    if not variable:
+        variable = sympy.Symbol('s', positive=True)
     
     # Frequency Scale to j*w
     omega = 2j*np.pi * freq
