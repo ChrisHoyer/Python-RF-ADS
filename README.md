@@ -5,7 +5,7 @@ This is a library with different sub-libraries to provide basic functions, which
 ## Content
 
 ### ADS_Toolbox
-Functionality to import ADS Simulation Data (ASCII-File) and calculate different figure of merrits:
+Functionality to import Simulation Data (ASCII-File) and calculate different figure of merrits:
 
 - ImportData: Imports an ASCII file from ads
 - Calc_HarmonicBalance_Single: Calculates IP3, Psat, 1dB Compression Point based on HarmonicBalance Simulation
