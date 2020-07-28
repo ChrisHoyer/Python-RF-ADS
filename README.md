@@ -44,6 +44,7 @@ Major fucus on control theorie and plotting
  - Extract_Sympy_1Var: Substitutes Sympy and generates numeric solution
  - BodePlot_FBCTRL: Generate BodePlot out of symbolic feedback transfer function
  - BodePlot: Generate BodePlot out of symbolic transfer function
+ - ZeroPole_Plot: Generate ZeroPole Plot
  - StepResponse: Generate Step Response with Heaviside Fct from symbolic transfer function
  - Substitute_Datatype: Substitute constant values with symboles
  - ReSubstitute_Datatype: Resubstitute constant values with symboles

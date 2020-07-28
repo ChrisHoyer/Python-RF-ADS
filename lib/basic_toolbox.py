@@ -210,11 +210,25 @@ def CSV2Dict(csv_file, delimiter=';', complexdelimiter='/',
             # name new block
             if NewBlockStart:
                 
+                # reset flag
+                NewBlockStart = False
+                
                 # Any external names defined?
                 if not blockkeys:
                     block_name = block_count
                 else:
                     block_name = blockkeys[block_count]
+                    
+                # Insert readed Block and start new block
+                if len(Block) > 0:
+                    
+                    # insert into dataset
+                    Data[block_name] = Block
+                    block_count = block_count + 1
+                    
+                    # delete old Block
+                    block_line = 0
+                    Block = {}
             
             # starting new block
             if block_line == 0:
@@ -300,6 +314,11 @@ def CSV2Dict(csv_file, delimiter=';', complexdelimiter='/',
         if block_count == 0:
             return Block
         else:
+            
+            # add last block, if not empty
+            if len(Block) > 0:
+                Data[block_name] = Block
+                
             return Data
 
 ############################################################################# 
@@ -723,8 +742,8 @@ def Linearization_Point(XData, YData, XPoint, Tolerance, num=100,
 ###         Generate Plot for Time Domain / Linear
 #############################################################################
 def Linear_Plot(ax, Plot_list, X_label, Y_label, Legend=True, LegendLoc=0,
-                TwinX=None, Ylim=None, XAutolim=True, fontsize=12, TicksEng=True,
-                fontsize_label=12, yaxis_pad=0, xaxis_pad=0, BlackWhite=False,
+                TwinX=None, Ylim=None, XAutolim=True, fontsize=14, TicksEng=True,
+                fontsize_label=14, yaxis_pad=0, xaxis_pad=0, BlackWhite=False,
                 grid = True,
                 **kwargs):
 #############################################################################  
@@ -1012,7 +1031,7 @@ def Box_Plot(ax, XDataset , YDataset, X_label, Y_label, boxwidth=0,
 #############################################################################
 def SemiLogX_Plot(ax, Plot_list, X_label, Y_label, Legend=True, LegendLoc=0, 
                   TwinX=None, Ylim=None, XAutolim=True, fontsize=12, 
-                  LegendAlpha=1, BlackWhite=False, **kwargs):
+                  LegendAlpha=1, BlackWhite=False, XTicksLabel=None, **kwargs):
 #############################################################################  
     """
     Prepares a X Log and Y Linear plot
@@ -1031,6 +1050,7 @@ def SemiLogX_Plot(ax, Plot_list, X_label, Y_label, Legend=True, LegendLoc=0,
     fontsize                (option) Fontsize of this Plot 
     LegendAlpha             (option) Transparency of legend box
     BlackWhite              (option) Use Black and White Preset
+    XTicksLabel             (option) Sets the number of XTicks between min and max
     
     return type
        None  (writes directly into axis)
@@ -1087,19 +1107,22 @@ def SemiLogX_Plot(ax, Plot_list, X_label, Y_label, Legend=True, LegendLoc=0,
                 
         # plot
         ax.semilogx(x_plot, y_plot, label=plot[2], **userargs)     
-      
+
+    # =================================== 
     # label
     ax.set_ylabel(Y_label[0])
     ax.yaxis.set_major_formatter(tck.EngFormatter(unit=Y_label[1]))
     ax.set_xlabel(X_label[0])
     ax.xaxis.set_major_formatter(tck.EngFormatter(unit=X_label[1]))
-        
+
+    # ===================================         
     # set font sizes
     for item in ([ax.title, ax.xaxis.label, ax.yaxis.label] +
              ax.get_xticklabels() + ax.get_yticklabels()):
         item.set_fontsize(fontsize)
-        
-        # Align both Y Axis to grid
+      
+    # =================================== 
+    # Align both Y Axis to grid
     if not(TwinX==None) and type(TwinX) == type(ax) and Legend:
         
         # Align Axis
@@ -1123,15 +1146,27 @@ def SemiLogX_Plot(ax, Plot_list, X_label, Y_label, Legend=True, LegendLoc=0,
         ax.grid(True, which='major')
         ax.grid(which='minor', alpha=1, linestyle=':', linewidth=1)
         ax.grid(which='major', alpha=1, linewidth=1.2)
-        
-        # xlimit
+      
+    # =================================== 
+    # xlimit
     if XAutolim:
         ax.set_xlim([np.min(plot[0]),np.max(plot[0])])
 
-    # xlimit    
+    # =================================== 
+    # xlimit    a
     if Ylim:
         ax.set_ylim([Ylim[0],Ylim[1]])
+    
+    # =================================== 
+    # change XTick Label Position
+    if XTicksLabel:
         
+        # change visibility of each Nth tick
+        for (index,label) in enumerate(ax.xaxis.get_ticklabels()):
+            if index % XTicksLabel != 0:
+                label.set_visible(False)
+        
+  
     # jump back
     return
 
@@ -1139,8 +1174,8 @@ def SemiLogX_Plot(ax, Plot_list, X_label, Y_label, Legend=True, LegendLoc=0,
 ###         Generate Vertical Line with Label
 #############################################################################
 def Vline_Plot(ax, xValue, xLabel, yDistance=0.25, yPos='up', color='r',
-               fontsize='12', linestyle='-', horizontalalignment='center',
-               **kwargs):
+               fontsize='12', linestyle='-', linewidth=1,
+               horizontalalignment='center', **kwargs):
 #############################################################################  
     """
     Generates Vertical Line in Plot
@@ -1155,6 +1190,7 @@ def Vline_Plot(ax, xValue, xLabel, yDistance=0.25, yPos='up', color='r',
     color                   color of line and text (default=red)
     fontsize                fontsize of text (default=12)
     linestyle               linestyle of line (default='-')
+    linewidth               linewidth
     horizontalalignment     Alignment of text (default='center')
     
     return type
@@ -1169,7 +1205,7 @@ def Vline_Plot(ax, xValue, xLabel, yDistance=0.25, yPos='up', color='r',
 
 #############################################################################  
     # Add vertical line
-    ax.axvline(x=xValue, color=color, linestyle=linestyle)
+    ax.axvline(x=xValue, color=color, linestyle=linestyle, linewidth=linewidth)
 
     # find y Position
     ylimits = ax.get_ylim()
