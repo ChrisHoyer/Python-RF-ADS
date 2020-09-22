@@ -5,7 +5,7 @@ This is a library with different sub-libraries to provide basic functions, which
 ## Content
 
 ### ADS_Toolbox
-Functionality to import Simulation Data (ASCII-File) and calculate different figure of merrits:
+Functionality to import ADS Simulation Data (ASCII-File) and calculate different figure of merrits:
 
 - ImportData: Imports an ASCII file from ads
 - Calc_HarmonicBalance_Single: Calculates IP3, Psat, 1dB Compression Point based on HarmonicBalance Simulation
@@ -16,7 +16,7 @@ Functionality to import Simulation Data (ASCII-File) and calculate different fig
 - ImportS2P: Data conversion (change in future versions)
 
 ### Basic_Toolbox
-Major focus on plotting:
+Major focus on plotting and import
 
 - CSV2Dict: script for importing CSV Files
 - CSV2Area: script for calculating polygon area based on coordinates
@@ -28,6 +28,7 @@ Major focus on plotting:
 - SemiLogX_Plot: semilog x plot function with automated labeling
 - Vline_Plot: generates vertical line in plot with label
 - Hline_Plot: generates horizontal line in plot with label
+- Rectangle_Plot: generates rectangle inside plot
 - Align_YAxis: Align two YGrids in one plot
 - FindPoint_NextValue: find nearest point
 - Digitalize_Data: Generates binary stream from data and clock
